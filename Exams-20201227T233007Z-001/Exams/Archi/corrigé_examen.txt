@@ -1,0 +1,93 @@
+Exercice 1
+Question 2.1.
+
+Non sérialisable. Cycle : T1 -> T4 ->T2->T1 et T3->T1
+
+Question 2.2 (estampillage)
+
+8 : T2 est abandonnée
+
+9 : T1 est abandonnée
+
+Question 2.3 (certification)
+
+11 : T1 valide
+
+12 : T2 abandonne à cause d’un conflit sur b avec T1
+
+13 : T3 valide
+
+14 : T4 abandonne à cause d’un conflit sur a avec T1
+
+Question 2.4 : verrouillage classique
+
+7 : T4 se bloque en attente de T1
+
+8 : T2 se bloque en attente de T4
+
+9 : T1 se bloque en attente de T3
+
+13 : T3 se termine
+
+>14 : T1 se bloque en attente de T2
+
+T1 (par exemple) est abandonnée. T4 se débloque et termine. T2 se débloque et termine
+
+Question 2.5 :T2 en Read Committed. 
+
+3 : T2 pose un verrou en lecture et le relâche // c'est la différence avec la  question précédente
+
+7 : T4 se bloque en attente de T1
+
+8 : T2 ne se bloque plus en attente de T4
+
+9 : T1 se bloque en attente de T3
+
+13 : T3 se termine et débloque T1
+
+>14 :  T1 ne se bloque plus en attente de T2 puis valide
+
+T4 se débloque et termine. T2 se termine
+
+ 
+Exercice 2
+
+Question 2.1 types d'index
+
+Index plaçant de type hachage sur IdClient car point queries avec accès privilégié (performance max attendue)
+
+Index non plaçant de type bitmap sur IdProduit et Quantité car les 2 critères sont peu sélectifs
+
+Question 2.2 : taille des bitmap
+
+Bitmap IdProduit : 1.000.000 * 50 / 4096*8 = 1525 pages 
+// vous pouvez aussi faire le calcul avec des pages de 4Ko = 4000 octets au lieu de 4096
+
+Bitmap Quantité : 1.000.000 * 20 / 4096*8 = 610 pages
+
+Question 2.3 : nb résultats
+
+Req1 : 100 tuples
+
+Req2 : 1.000.000 / 50*20 = 1000
+
+Question 2.4 : performance
+
+Req1 : 100 tuples = 2 pages => 1E/S aléatoire + 1 E/S séquentielle = 5,2 ms
+
+Req2 : 1525 + 610 E/S séquentielles + 1000 E/S aléatoires = 427ms + 5s
+
+
+Quiz
+
+Toute réponse non justifiée sera considérée comme fausse.
+
+1.    Donner le max de pages à R
+
+2.   Oui, T1 peut valider sur S1. Quand la connexion sera rétablie avec S2, S2 demandera au coordinateur 
+ce qu'il faut faire de cette transaction et le coordinateur lui répondra de valider
+
+3.  Bitmap car séquentiel. B-Tree et hachage génèrent des E/S aléatoires => mal adapté à la Flash NAND.
+
+4. au-delà d'un certain nombre de requêtes, un index classique serait plus efficace que DB Cracking car 
+son coût de construction serait amorti
